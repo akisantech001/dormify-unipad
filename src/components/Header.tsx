@@ -1,5 +1,5 @@
 
-import { Search, MapPin, GraduationCap } from "lucide-react";
+import { Search, MapPin, GraduationCap, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -28,12 +28,18 @@ const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniv
     <header className="bg-white shadow-sm border-b sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="bg-blue-600 p-2 rounded-lg">
-              <GraduationCap className="h-6 w-6 text-white" />
+          {/* Logo and Login/Signup */}
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <div className="bg-blue-600 p-2 rounded-lg">
+                <GraduationCap className="h-6 w-6 text-white" />
+              </div>
+              <h1 className="text-xl font-bold text-gray-900">StudentStay</h1>
             </div>
-            <h1 className="text-xl font-bold text-gray-900">StudentStay</h1>
+            <Button variant="outline" className="flex items-center space-x-2">
+              <User className="h-4 w-4" />
+              <span>Login / Sign Up</span>
+            </Button>
           </div>
 
           {/* Search Bar */}

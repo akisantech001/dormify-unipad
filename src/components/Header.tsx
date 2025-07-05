@@ -3,6 +3,7 @@ import { Search, MapPin, GraduationCap, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   searchTerm: string;
@@ -24,6 +25,12 @@ const universities = [
 ];
 
 const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniversity }: HeaderProps) => {
+  const navigate = useNavigate();
+
+  const handleAuthClick = () => {
+    navigate('/auth');
+  };
+
   return (
     <header className="bg-white shadow-sm border-b sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,9 +41,9 @@ const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniv
               <div className="bg-blue-600 p-2 rounded-lg">
                 <GraduationCap className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-xl font-bold text-gray-900">StudentStay</h1>
+              <h1 className="text-xl font-bold text-gray-900">Dormify</h1>
             </div>
-            <Button variant="outline" className="flex items-center space-x-2">
+            <Button variant="outline" className="flex items-center space-x-2" onClick={handleAuthClick}>
               <User className="h-4 w-4" />
               <span>Login / Sign Up</span>
             </Button>

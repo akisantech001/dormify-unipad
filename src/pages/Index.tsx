@@ -13,8 +13,11 @@ const Index = () => {
   const [bedrooms, setBedrooms] = useState("Any");
   const [amenities, setAmenities] = useState<string[]>([]);
 
+  console.log("Sample properties loaded:", sampleProperties.length);
+  console.log("Current filters:", { searchTerm, selectedUniversity, priceRange, propertyType, bedrooms, amenities });
+
   const filteredProperties = useMemo(() => {
-    return sampleProperties.filter((property: Property) => {
+    const filtered = sampleProperties.filter((property: Property) => {
       // Search term filter
       const matchesSearch = searchTerm === "" || 
         property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -42,6 +45,9 @@ const Index = () => {
 
       return matchesSearch && matchesUniversity && matchesPrice && matchesType && matchesBedrooms && matchesAmenities;
     });
+    
+    console.log("Filtered properties:", filtered.length);
+    return filtered;
   }, [searchTerm, selectedUniversity, priceRange, propertyType, bedrooms, amenities]);
 
   return (

@@ -2,22 +2,7 @@
 import { MapPin, Users, Wifi, Car, Utensils, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-interface Property {
-  id: number;
-  title: string;
-  location: string;
-  university: string;
-  price: number;
-  rating: number;
-  reviews: number;
-  bedrooms: number;
-  bathrooms: number;
-  distance: string;
-  amenities: string[];
-  image: string;
-  verified: boolean;
-}
+import { Property } from "@/data/sampleProperties";
 
 interface PropertyCardProps {
   property: Property;

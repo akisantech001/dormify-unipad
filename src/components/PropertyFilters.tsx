@@ -1,5 +1,5 @@
 
-import { Sliders3, DollarSign, Home, Users } from "lucide-react";
+import { SlidersHorizontal, DollarSign, Home, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -75,7 +75,7 @@ const PropertyFilters = ({
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center text-lg font-semibold">
-            <Sliders3 className="h-5 w-5 mr-2 text-blue-600" />
+            <SlidersHorizontal className="h-5 w-5 mr-2 text-blue-600" />
             Filters
           </CardTitle>
           <Button variant="ghost" size="sm" onClick={clearAllFilters} className="text-blue-600 hover:text-blue-700">

@@ -1,5 +1,5 @@
 
-import { MapPin, Menu, User, GraduationCap } from "lucide-react";
+import { MapPin, Menu, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
@@ -41,10 +41,11 @@ const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHea
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2 cursor-pointer" onClick={handleLogoClick}>
-            <div className="bg-blue-600 p-2 rounded-lg">
-              <GraduationCap className="h-6 w-6 text-white" />
-            </div>
-            <h1 className="text-xl font-bold text-gray-900">Dormify</h1>
+            <img 
+              src="/lovable-uploads/5c4aa35b-ca69-4dc1-b276-5b3e91f46e3a.png" 
+              alt="Dormify" 
+              className="h-8 w-auto"
+            />
           </div>
 
           {/* Explore Button and University Dropdown */}

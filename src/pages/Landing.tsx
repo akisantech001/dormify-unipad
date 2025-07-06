@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Search, MapPin, Menu, User, GraduationCap } from "lucide-react";
+import { Search, MapPin, Menu, User, GraduationCap, Twitter, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -60,6 +60,10 @@ const Landing = () => {
     navigate('/properties');
   };
 
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     navigate('/properties');
@@ -72,26 +76,22 @@ const Landing = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={handleLogoClick}>
               <div className="bg-blue-600 p-2 rounded-lg">
                 <GraduationCap className="h-6 w-6 text-white" />
               </div>
               <h1 className="text-xl font-bold text-gray-900">Dormify</h1>
             </div>
 
-            {/* Search Bar */}
+            {/* Explore Button and University Dropdown */}
             <div className="flex-1 max-w-2xl mx-8">
               <div className="flex items-center space-x-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input
-                    type="text"
-                    placeholder="Explore accommodations"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
+                <Button 
+                  onClick={handleExploreClick}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
+                >
+                  Explore Accommodations
+                </Button>
                 <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
                   <SelectTrigger className="w-48">
                     <MapPin className="h-4 w-4 mr-2 text-gray-500" />
@@ -219,9 +219,29 @@ const Landing = () => {
             </div>
             <h3 className="text-xl font-bold">Dormify</h3>
           </div>
-          <p className="text-gray-400">
+          <p className="text-gray-400 mb-6">
             Making student accommodation search simple and reliable
           </p>
+          
+          {/* Social Media Icons */}
+          <div className="flex items-center justify-center space-x-6">
+            <a 
+              href="https://twitter.com/dormify" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <Twitter className="h-6 w-6" />
+            </a>
+            <a 
+              href="https://youtube.com/dormify" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <Youtube className="h-6 w-6" />
+            </a>
+          </div>
         </div>
       </footer>
     </div>

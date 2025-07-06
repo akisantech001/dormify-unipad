@@ -1,4 +1,3 @@
-
 import { Search, MapPin, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,7 +44,7 @@ const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniv
               <img 
                 src="/lovable-uploads/5c4aa35b-ca69-4dc1-b276-5b3e91f46e3a.png" 
                 alt="Dormify" 
-                className="h-8 w-auto"
+                className="h-12 w-auto"
               />
             </div>
             <Button variant="outline" className="flex items-center space-x-2" onClick={handleAuthClick}>

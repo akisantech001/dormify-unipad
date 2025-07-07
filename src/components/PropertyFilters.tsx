@@ -64,10 +64,19 @@ const PropertyFilters = ({
   };
 
   const clearAllFilters = () => {
-    setPriceRange([0, 3000]);
+    setPriceRange([0, 250000]);
     setPropertyType("All Types");
     setBedrooms("Any");
     setAmenities([]);
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-NG', {
+      style: 'currency',
+      currency: 'NGN',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
   };
 
   return (
@@ -95,14 +104,14 @@ const PropertyFilters = ({
             <Slider
               value={priceRange}
               onValueChange={setPriceRange}
-              max={3000}
+              max={250000}
               min={0}
-              step={50}
+              step={5000}
               className="mb-2"
             />
             <div className="flex justify-between text-sm text-gray-600">
-              <span>${priceRange[0]}</span>
-              <span>${priceRange[1]}</span>
+              <span>{formatPrice(priceRange[0])}</span>
+              <span>{formatPrice(priceRange[1])}</span>
             </div>
           </div>
         </div>

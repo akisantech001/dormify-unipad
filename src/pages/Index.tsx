@@ -8,7 +8,7 @@ import { sampleProperties, Property } from "@/data/sampleProperties";
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUniversity, setSelectedUniversity] = useState("All Universities");
-  const [priceRange, setPriceRange] = useState([0, 3000]);
+  const [priceRange, setPriceRange] = useState([0, 250000]);
   const [propertyType, setPropertyType] = useState("All Types");
   const [bedrooms, setBedrooms] = useState("Any");
   const [amenities, setAmenities] = useState<string[]>([]);

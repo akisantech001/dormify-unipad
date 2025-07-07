@@ -14,14 +14,18 @@ interface HeaderProps {
 
 const universities = [
   "All Universities",
-  "Harvard University",
-  "MIT",
-  "Stanford University",
-  "UC Berkeley",
-  "NYU",
-  "Columbia University",
-  "University of Chicago",
-  "UCLA"
+  "University of Lagos",
+  "University of Ibadan",
+  "Ahmadu Bello University",
+  "University of Nigeria, Nsukka",
+  "Obafemi Awolowo University",
+  "Lagos State University",
+  "Covenant University",
+  "University of Abuja",
+  "Federal University of Technology, Akure",
+  "University of Benin",
+  "Babcock University",
+  "Afe Babalola University"
 ];
 
 const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniversity }: HeaderProps) => {

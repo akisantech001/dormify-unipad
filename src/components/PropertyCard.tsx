@@ -15,6 +15,15 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
     'Kitchen': Utensils,
   };
 
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-NG', {
+      style: 'currency',
+      currency: 'NGN',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-white rounded-xl overflow-hidden border border-gray-200">
       <div className="relative">
@@ -76,7 +85,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
 
           <div className="flex items-center justify-between pt-2 border-t">
             <div>
-              <span className="text-2xl font-bold text-gray-900">${property.price}</span>
+              <span className="text-2xl font-bold text-gray-900">{formatPrice(property.price)}</span>
               <span className="text-sm text-gray-600">/month</span>
             </div>
             <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">

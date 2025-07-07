@@ -1,7 +1,6 @@
 
 import { useProperties } from '@/hooks/useProperties';
-import PropertyCard from './PropertyCard';
-import { useState } from 'react';
+import PropertyCardWithBooking from './PropertyCardWithBooking';
 
 interface PropertyListFromDBProps {
   filters?: {
@@ -50,7 +49,7 @@ const PropertyListFromDB = ({ filters }: PropertyListFromDBProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {properties.map((property) => (
-        <PropertyCard
+        <PropertyCardWithBooking
           key={property.id}
           property={{
             id: parseInt(property.id),
@@ -63,8 +62,8 @@ const PropertyListFromDB = ({ filters }: PropertyListFromDBProps) => {
             bedrooms: property.bedrooms,
             bathrooms: property.bathrooms,
             distance: property.distance_to_university || '0.5 miles',
-            amenities: property.amenities,
-            image: property.images[0] || 'photo-1721322800607-8c38375eef04',
+            amenities: property.amenities || [],
+            image: property.images && property.images[0] ? property.images[0] : 'photo-1721322800607-8c38375eef04',
             verified: property.is_verified,
             type: property.property_type,
           }}

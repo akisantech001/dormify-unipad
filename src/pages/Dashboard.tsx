@@ -1,4 +1,3 @@
-
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -48,6 +47,10 @@ const Dashboard = () => {
     navigate('/');
   };
 
+  const handleManageProperties = () => {
+    navigate('/manage-properties');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -60,12 +63,12 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-20">
             <div className="flex items-center space-x-2">
               <img 
                 src="/lovable-uploads/5c4aa35b-ca69-4dc1-b276-5b3e91f46e3a.png" 
                 alt="Dormify" 
-                className="h-12 w-auto"
+                className="h-20 w-auto"
               />
             </div>
             <div className="flex items-center space-x-4">
@@ -144,6 +147,17 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
             </div>
+
+            {profile?.role === 'landlord' && (
+              <div className="mt-6">
+                <Button onClick={handleManageProperties} className="mr-4">
+                  Manage Properties
+                </Button>
+                <Button variant="outline" onClick={() => navigate('/messages')}>
+                  View Messages
+                </Button>
+              </div>
+            )}
           </TabsContent>
           
           <TabsContent value="properties">
@@ -152,7 +166,16 @@ const Dashboard = () => {
                 <CardTitle>Your Properties</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">Property management will be implemented here.</p>
+                {profile?.role === 'landlord' ? (
+                  <div>
+                    <Button onClick={handleManageProperties}>
+                      Add New Property
+                    </Button>
+                    <p className="text-gray-600 mt-4">Property list will be displayed here.</p>
+                  </div>
+                ) : (
+                  <p className="text-gray-600">Your bookings and favorites will be displayed here.</p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

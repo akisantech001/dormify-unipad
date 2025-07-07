@@ -48,13 +48,13 @@ const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHea
   return (
     <header className="bg-white shadow-sm border-b sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 lg:h-16">
+        <div className="flex items-center justify-between h-24 lg:h-20">
           {/* Logo */}
           <div className="flex items-center space-x-2 cursor-pointer flex-shrink-0" onClick={handleLogoClick}>
             <img 
               src="/lovable-uploads/5c4aa35b-ca69-4dc1-b276-5b3e91f46e3a.png" 
               alt="Dormify" 
-              className="h-16 w-auto"
+              className="h-20 w-auto"
             />
           </div>
 

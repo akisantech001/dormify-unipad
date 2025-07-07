@@ -1,246 +1,171 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { GraduationCap, User, ShieldCheck, Building2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAuth } from '@/hooks/useAuth';
+import { useEffect } from 'react';
 
 const Auth = () => {
+  const { signIn, signUp, user, loading } = useAuth();
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true);
-  const [userRole, setUserRole] = useState("student");
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    fullName: "",
-    phone: "",
-    university: "",
-    agencyName: "",
-    licenseNumber: ""
-  });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (user) {
+      navigate('/properties');
+    }
+  }, [user, navigate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted:", { ...formData, role: userRole });
-    // TODO: Implement actual authentication logic
-    navigate('/');
+    setIsLoading(true);
+    
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    const { error } = await signIn(email, password);
+    
+    if (!error) {
+      navigate('/properties');
+    }
+    
+    setIsLoading(false);
   };
 
-  const roleOptions = [
-    { value: "student", label: "Student", icon: User, description: "Find your perfect accommodation" },
-    { value: "agent", label: "Real Estate Agent", icon: Building2, description: "List properties for students" },
-    { value: "admin", label: "Admin", icon: ShieldCheck, description: "Manage and verify properties" }
-  ];
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const fullName = formData.get('fullName') as string;
+    const role = formData.get('role') as 'student' | 'landlord';
+
+    await signUp(email, password, fullName, role);
+    setIsLoading(false);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <div className="flex justify-center">
-            <div className="bg-blue-600 p-3 rounded-lg">
-              <GraduationCap className="h-8 w-8 text-white" />
-            </div>
-          </div>
-          <h2 className="mt-4 text-3xl font-bold text-gray-900">Dormify</h2>
-          <p className="mt-2 text-sm text-gray-600">
-            {isLogin ? "Sign in to your account" : "Create your account"}
-          </p>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+      <div className="max-w-md w-full">
+        <div className="text-center mb-8">
+          <img 
+            src="/lovable-uploads/5c4aa35b-ca69-4dc1-b276-5b3e91f46e3a.png" 
+            alt="Dormify" 
+            className="h-16 w-auto mx-auto mb-4"
+          />
+          <h1 className="text-2xl font-bold text-gray-900">Welcome to Dormify</h1>
+          <p className="text-gray-600">Find your perfect student accommodation</p>
         </div>
 
-        <Card className="bg-white shadow-xl">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">
-              {isLogin ? "Welcome back" : "Get started"}
-            </CardTitle>
-            <CardDescription className="text-center">
-              {isLogin ? "Enter your credentials to access your account" : "Choose your role and create your account"}
-            </CardDescription>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-center">Get Started</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Role Selection for Signup */}
-              {!isLogin && (
-                <div className="space-y-3">
-                  <Label htmlFor="role">I am a:</Label>
-                  <div className="grid grid-cols-1 gap-3">
-                    {roleOptions.map((role) => {
-                      const IconComponent = role.icon;
-                      return (
-                        <div
-                          key={role.value}
-                          className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${
-                            userRole === role.value
-                              ? "border-blue-500 bg-blue-50"
-                              : "border-gray-200 hover:border-gray-300"
-                          }`}
-                          onClick={() => setUserRole(role.value)}
-                        >
-                          <div className="flex items-center space-x-3">
-                            <IconComponent className="h-5 w-5 text-blue-600" />
-                            <div>
-                              <p className="font-medium text-gray-900">{role.label}</p>
-                              <p className="text-sm text-gray-500">{role.description}</p>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Basic Information */}
-              {!isLogin && (
-                <div className="space-y-4">
+          <CardContent>
+            <Tabs defaultValue="signin" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="signin">Sign In</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="signin">
+                <form onSubmit={handleSignIn} className="space-y-4">
                   <div>
-                    <Label htmlFor="fullName">Full Name</Label>
+                    <Label htmlFor="signin-email">Email</Label>
                     <Input
-                      id="fullName"
-                      type="text"
-                      value={formData.fullName}
-                      onChange={(e) => handleInputChange("fullName", e.target.value)}
+                      id="signin-email"
+                      name="email"
+                      type="email"
                       required
-                      className="mt-1"
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div>
-                <Label htmlFor="email">Email address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  required
-                  className="mt-1"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => handleInputChange("password", e.target.value)}
-                  required
-                  className="mt-1"
-                />
-              </div>
-
-              {!isLogin && (
-                <div>
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    value={formData.confirmPassword}
-                    onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                    required
-                    className="mt-1"
-                  />
-                </div>
-              )}
-
-              {/* Role-specific fields */}
-              {!isLogin && userRole === "student" && (
-                <div>
-                  <Label htmlFor="university">University</Label>
-                  <Select value={formData.university} onValueChange={(value) => handleInputChange("university", value)}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select your university" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="harvard">Harvard University</SelectItem>
-                      <SelectItem value="mit">MIT</SelectItem>
-                      <SelectItem value="stanford">Stanford University</SelectItem>
-                      <SelectItem value="berkeley">UC Berkeley</SelectItem>
-                      <SelectItem value="nyu">NYU</SelectItem>
-                      <SelectItem value="columbia">Columbia University</SelectItem>
-                      <SelectItem value="chicago">University of Chicago</SelectItem>
-                      <SelectItem value="ucla">UCLA</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              {!isLogin && userRole === "agent" && (
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="agencyName">Agency Name</Label>
-                    <Input
-                      id="agencyName"
-                      type="text"
-                      value={formData.agencyName}
-                      onChange={(e) => handleInputChange("agencyName", e.target.value)}
-                      required
-                      className="mt-1"
+                      placeholder="your@email.com"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="licenseNumber">License Number</Label>
+                    <Label htmlFor="signin-password">Password</Label>
                     <Input
-                      id="licenseNumber"
-                      type="text"
-                      value={formData.licenseNumber}
-                      onChange={(e) => handleInputChange("licenseNumber", e.target.value)}
+                      id="signin-password"
+                      name="password"
+                      type="password"
                       required
-                      className="mt-1"
+                      placeholder="Your password"
                     />
                   </div>
-                </div>
-              )}
-
-              {!isLogin && (
-                <div>
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange("phone", e.target.value)}
-                    required
-                    className="mt-1"
-                  />
-                </div>
-              )}
-
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-                {isLogin ? "Sign In" : "Create Account"}
-              </Button>
-            </form>
-
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-sm text-blue-600 hover:text-blue-500"
-              >
-                {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
-              </button>
-            </div>
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? 'Signing in...' : 'Sign In'}
+                  </Button>
+                </form>
+              </TabsContent>
+              
+              <TabsContent value="signup">
+                <form onSubmit={handleSignUp} className="space-y-4">
+                  <div>
+                    <Label htmlFor="signup-name">Full Name</Label>
+                    <Input
+                      id="signup-name"
+                      name="fullName"
+                      type="text"
+                      required
+                      placeholder="Your full name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="signup-email">Email</Label>
+                    <Input
+                      id="signup-email"
+                      name="email"
+                      type="email"
+                      required
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="signup-password">Password</Label>
+                    <Input
+                      id="signup-password"
+                      name="password"
+                      type="password"
+                      required
+                      placeholder="Create a password"
+                      minLength={6}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="role">I am a</Label>
+                    <Select name="role" required>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="student">Student</SelectItem>
+                        <SelectItem value="landlord">Landlord</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? 'Creating account...' : 'Create Account'}
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
-
-        <div className="text-center">
-          <button
-            onClick={() => navigate('/')}
-            className="text-sm text-gray-500 hover:text-gray-700"
-          >
-            ← Back to home
-          </button>
-        </div>
       </div>
     </div>
   );

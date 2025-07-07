@@ -3,6 +3,7 @@ import { MapPin, Menu, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const universities = [
   "University of Lagos",
@@ -26,9 +27,14 @@ interface LandingHeaderProps {
 
 const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHeaderProps) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleAuthClick = () => {
-    navigate('/auth');
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/auth');
+    }
   };
 
   const handleExploreClick = () => {
@@ -85,8 +91,12 @@ const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHea
               onClick={handleAuthClick}
             >
               <User className="h-4 w-4" />
-              <span className="hidden md:inline">Login / Sign Up</span>
-              <span className="md:hidden">Login</span>
+              <span className="hidden md:inline">
+                {user ? 'Dashboard' : 'Login / Sign Up'}
+              </span>
+              <span className="md:hidden">
+                {user ? 'Dashboard' : 'Login'}
+              </span>
             </Button>
             <Button variant="ghost" size="icon" className="lg:hidden">
               <Menu className="h-5 w-5" />
@@ -122,7 +132,7 @@ const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHea
               onClick={handleAuthClick}
             >
               <User className="h-4 w-4" />
-              <span>Login / Sign Up</span>
+              <span>{user ? 'Dashboard' : 'Login / Sign Up'}</span>
             </Button>
           </div>
         </div>

@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 const Dashboard = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -19,8 +19,14 @@ const Dashboard = () => {
       return;
     }
 
+    // Redirect admins to admin dashboard
+    if (isAdmin) {
+      navigate('/admin');
+      return;
+    }
+
     fetchProfile();
-  }, [user, navigate]);
+  }, [user, isAdmin, navigate]);
 
   const fetchProfile = async () => {
     if (!user) return;

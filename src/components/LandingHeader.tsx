@@ -1,9 +1,10 @@
 
-import { MapPin, Menu, User } from "lucide-react";
+import { MapPin, Menu, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
 
 const universities = [
   "University of Lagos",
@@ -28,6 +29,7 @@ interface LandingHeaderProps {
 const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHeaderProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleAuthClick = () => {
     if (user) {
@@ -43,6 +45,11 @@ const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHea
 
   const handleLogoClick = () => {
     navigate('/');
+  };
+
+  const handleNavClick = (path: string) => {
+    navigate(path);
+    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -98,8 +105,13 @@ const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHea
                 {user ? 'Dashboard' : 'Login'}
               </span>
             </Button>
-            <Button variant="ghost" size="icon" className="lg:hidden">
-              <Menu className="h-5 w-5" />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="lg:hidden"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
@@ -136,6 +148,32 @@ const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHea
             </Button>
           </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden absolute left-0 right-0 top-full bg-white border-b shadow-lg z-40">
+            <div className="px-4 py-4 space-y-3">
+              <button 
+                onClick={() => handleNavClick('/about')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              >
+                About Us
+              </button>
+              <button 
+                onClick={() => handleNavClick('/contact')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              >
+                Contact Us
+              </button>
+              <button 
+                onClick={() => handleNavClick('/legal')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              >
+                Legal
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );

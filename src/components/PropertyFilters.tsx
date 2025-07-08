@@ -1,5 +1,5 @@
 
-import { SlidersHorizontal, DollarSign, Home, Users } from "lucide-react";
+import { SlidersHorizontal, Banknote, Home, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -97,7 +97,7 @@ const PropertyFilters = ({
         {/* Price Range */}
         <div>
           <div className="flex items-center mb-3">
-            <DollarSign className="h-4 w-4 mr-2 text-gray-600" />
+            <Banknote className="h-4 w-4 mr-2 text-gray-600" />
             <span className="font-medium">Price Range</span>
           </div>
           <div className="px-2">

@@ -1,4 +1,6 @@
 
+import { useState } from "react";
+import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,8 +8,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, Phone, MapPin } from "lucide-react";
 
 const Contact = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedUniversity, setSelectedUniversity] = useState("All Universities");
+
   return (
     <div className="min-h-screen bg-white">
+      <Header 
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        selectedUniversity={selectedUniversity}
+        setSelectedUniversity={setSelectedUniversity}
+      />
+      
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">Contact Us</h1>
         

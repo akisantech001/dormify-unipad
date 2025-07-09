@@ -1,8 +1,10 @@
-import { Search, MapPin, User } from "lucide-react";
+
+import { Search, MapPin, User, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 interface HeaderProps {
   searchTerm: string;
@@ -29,6 +31,7 @@ const universities = [
 
 const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniversity }: HeaderProps) => {
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleAuthClick = () => {
     navigate('/auth');
@@ -36,6 +39,11 @@ const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniv
 
   const handleLogoClick = () => {
     navigate('/');
+  };
+
+  const handleNavClick = (path: string) => {
+    navigate(path);
+    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -76,21 +84,32 @@ const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniv
             </div>
           </div>
 
-          {/* University Filter */}
-          <div className="hidden lg:flex items-center space-x-4">
-            <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
-              <SelectTrigger className="w-40 xl:w-48">
-                <MapPin className="h-4 w-4 mr-2 text-gray-500" />
-                <SelectValue placeholder="Select University" />
-              </SelectTrigger>
-              <SelectContent className="bg-white border shadow-lg">
-                {universities.map((university) => (
-                  <SelectItem key={university} value={university}>
-                    {university}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          {/* University Filter and Burger Menu */}
+          <div className="flex items-center space-x-2 lg:space-x-4">
+            <div className="hidden lg:flex">
+              <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
+                <SelectTrigger className="w-40 xl:w-48">
+                  <MapPin className="h-4 w-4 mr-2 text-gray-500" />
+                  <SelectValue placeholder="Select University" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border shadow-lg">
+                  {universities.map((university) => (
+                    <SelectItem key={university} value={university}>
+                      {university}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Burger Menu - Now visible on all screen sizes */}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
           </div>
         </div>
 
@@ -135,6 +154,32 @@ const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniv
             </Button>
           </div>
         </div>
+
+        {/* Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="absolute left-0 right-0 top-full bg-white border-b shadow-lg z-40">
+            <div className="px-4 py-4 space-y-3">
+              <button 
+                onClick={() => handleNavClick('/about')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              >
+                About Us
+              </button>
+              <button 
+                onClick={() => handleNavClick('/contact')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              >
+                Contact Us
+              </button>
+              <button 
+                onClick={() => handleNavClick('/legal')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              >
+                Legal
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );

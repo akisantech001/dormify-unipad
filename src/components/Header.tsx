@@ -1,5 +1,5 @@
 
-import { Search, MapPin, User, Menu, X } from "lucide-react";
+import { Search, MapPin, User, Menu, X, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -56,7 +56,7 @@ const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniv
               <img 
                 src="/lovable-uploads/5c4aa35b-ca69-4dc1-b276-5b3e91f46e3a.png" 
                 alt="Dormify" 
-                className="h-20 w-auto"
+                className="h-24 w-auto"
               />
             </div>
             <Button 
@@ -159,6 +159,13 @@ const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniv
         {isMobileMenuOpen && (
           <div className="absolute left-0 right-0 top-full bg-white border-b shadow-lg z-40">
             <div className="px-4 py-4 space-y-3">
+              <button 
+                onClick={() => handleNavClick('/')}
+                className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              >
+                <Home className="h-4 w-4 mr-2" />
+                Home
+              </button>
               <button 
                 onClick={() => handleNavClick('/about')}
                 className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"

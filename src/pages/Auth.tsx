@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,6 +25,10 @@ const Auth = () => {
       }
     }
   }, [user, isAdmin, navigate]);
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -85,7 +88,8 @@ const Auth = () => {
           <img 
             src="/lovable-uploads/5c4aa35b-ca69-4dc1-b276-5b3e91f46e3a.png" 
             alt="Dormify" 
-            className="h-16 w-auto mx-auto mb-4"
+            className="h-16 w-auto mx-auto mb-4 cursor-pointer"
+            onClick={handleLogoClick}
           />
           <h1 className="text-2xl font-bold text-gray-900">Welcome to Dormify</h1>
           <p className="text-gray-600">Find your perfect student accommodation</p>

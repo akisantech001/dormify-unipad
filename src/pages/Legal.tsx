@@ -59,7 +59,7 @@ const Legal = () => {
             <p className="text-gray-600">
               For legal inquiries, please contact us at legal@dormify.com
             </p>
-          </div>
+          </section>
         </div>
       </div>
     </div>

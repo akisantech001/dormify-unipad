@@ -2,7 +2,8 @@
 import { useState } from "react";
 import LandingHeader from "@/components/LandingHeader";
 import HeroSection from "@/components/HeroSection";
-import SearchSection from "@/components/SearchSection";
+import FeaturesSection from "@/components/FeaturesSection";
+import CTASection from "@/components/CTASection";
 import LandingFooter from "@/components/LandingFooter";
 
 const Landing = () => {
@@ -15,9 +16,10 @@ const Landing = () => {
         setSelectedUniversity={setSelectedUniversity}
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main>
         <HeroSection />
-        <SearchSection />
+        <FeaturesSection />
+        <CTASection />
       </main>
 
       <LandingFooter />

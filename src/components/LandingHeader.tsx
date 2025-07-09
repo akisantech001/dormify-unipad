@@ -53,124 +53,89 @@ const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHea
   };
 
   return (
-    <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+    <header className="bg-white/95 backdrop-blur-sm shadow-sm border-b sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-24 lg:h-20">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <div className="flex items-center space-x-2 cursor-pointer flex-shrink-0" onClick={handleLogoClick}>
             <img 
               src="/lovable-uploads/5c4aa35b-ca69-4dc1-b276-5b3e91f46e3a.png" 
               alt="Dormify" 
-              className="h-20 w-auto"
+              className="h-16 w-auto"
             />
           </div>
 
-          {/* Explore Button and University Dropdown - Hidden on mobile */}
-          <div className="hidden lg:flex flex-1 max-w-2xl mx-8">
-            <div className="flex items-center space-x-2 w-full">
-              <Button 
-                onClick={handleExploreClick}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 xl:px-6 py-2 text-sm xl:text-base"
-              >
-                Explore Accommodations
-              </Button>
-              <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
-                <SelectTrigger className="w-40 xl:w-48">
-                  <MapPin className="h-4 w-4 mr-2 text-gray-500" />
-                  <SelectValue placeholder="Select University" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border shadow-lg z-50">
-                  {universities.map((university) => (
-                    <SelectItem key={university} value={university}>
-                      {university}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Right Side Icons */}
-          <div className="flex items-center space-x-2 lg:space-x-4">
-            <Button 
-              variant="outline" 
-              className="hidden sm:flex items-center space-x-2 text-xs sm:text-sm px-2 sm:px-4" 
-              onClick={handleAuthClick}
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-8">
+            <button 
+              onClick={() => handleNavClick('/about')}
+              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
             >
-              <User className="h-4 w-4" />
-              <span className="hidden md:inline">
-                {user ? 'Dashboard' : 'Login / Sign Up'}
-              </span>
-              <span className="md:hidden">
-                {user ? 'Dashboard' : 'Login'}
-              </span>
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="lg:hidden"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              About
+            </button>
+            <button 
+              onClick={() => handleNavClick('/contact')}
+              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
             >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Menu - Show explore button and university selector on mobile */}
-        <div className="lg:hidden pb-4">
-          <div className="flex flex-col space-y-2">
+              Contact
+            </button>
             <Button 
               onClick={handleExploreClick}
-              className="bg-blue-600 hover:bg-blue-700 text-white w-full"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
             >
-              Explore Accommodations
+              Browse Properties
             </Button>
-            <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
-              <SelectTrigger className="w-full">
-                <MapPin className="h-4 w-4 mr-2 text-gray-500" />
-                <SelectValue placeholder="Select University" />
-              </SelectTrigger>
-              <SelectContent className="bg-white border shadow-lg z-50">
-                {universities.map((university) => (
-                  <SelectItem key={university} value={university}>
-                    {university}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
             <Button 
               variant="outline" 
-              className="sm:hidden flex items-center justify-center space-x-2 w-full" 
               onClick={handleAuthClick}
+              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2"
             >
-              <User className="h-4 w-4" />
-              <span>{user ? 'Dashboard' : 'Login / Sign Up'}</span>
+              <User className="h-4 w-4 mr-2" />
+              {user ? 'Dashboard' : 'Sign In'}
             </Button>
           </div>
+
+          {/* Mobile Menu Button */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="lg:hidden"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
         </div>
 
-        {/* Mobile Navigation Menu */}
+        {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden absolute left-0 right-0 top-full bg-white border-b shadow-lg z-40">
-            <div className="px-4 py-4 space-y-3">
+          <div className="lg:hidden border-t bg-white/95 backdrop-blur-sm">
+            <div className="px-4 py-6 space-y-4">
               <button 
                 onClick={() => handleNavClick('/about')}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium"
               >
                 About Us
               </button>
               <button 
                 onClick={() => handleNavClick('/contact')}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium"
               >
                 Contact Us
               </button>
-              <button 
-                onClick={() => handleNavClick('/legal')}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              <Button 
+                onClick={handleExploreClick}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3"
               >
-                Legal
-              </button>
+                Browse Properties
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleAuthClick}
+                className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 py-3"
+              >
+                <User className="h-4 w-4 mr-2" />
+                {user ? 'Dashboard' : 'Sign In'}
+              </Button>
             </div>
           </div>
         )}

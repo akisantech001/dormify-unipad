@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, MapPin } from "lucide-react";
+import { Search, MapPin, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -14,84 +14,93 @@ const HeroSection = () => {
     navigate('/properties');
   };
 
-  return (
-    <div className="relative bg-gradient-to-br from-blue-50 to-white">
-      {/* Hero Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Find Your Perfect
-            <span className="block text-blue-600 mt-2">Student Home</span>
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Discover verified student accommodations near top universities. 
-            Safe, affordable, and convenient housing solutions for students.
-          </p>
-        </div>
+  const scrollToFeatures = () => {
+    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
-        {/* Search Section */}
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl p-6 lg:p-8 border border-gray-100">
+  return (
+    <div className="relative min-h-screen bg-gradient-to-b from-slate-50 to-white flex flex-col">
+      {/* Hero Content */}
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20 pb-32">
+        <div className="max-w-6xl mx-auto text-center space-y-12">
+          {/* Main Headlines */}
+          <div className="space-y-6 animate-fade-in">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-light tracking-tight text-gray-900 leading-none">
+              Your perfect
+            </h1>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-light tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-none">
+              student home
+            </h1>
+            <p className="text-xl sm:text-2xl text-gray-600 font-light max-w-2xl mx-auto leading-relaxed mt-8">
+              Discover premium student accommodations near top universities. Verified, safe, and thoughtfully designed.
+            </p>
+          </div>
+
+          {/* Search Section */}
+          <div className="max-w-2xl mx-auto animate-scale-in">
             <form onSubmit={handleSearchSubmit} className="space-y-6">
-              {/* Search Input */}
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <MapPin className="h-5 w-5 text-gray-400" />
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                  <MapPin className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                 </div>
                 <Input
                   type="text"
-                  placeholder="Enter your university or preferred location..."
+                  placeholder="Enter your university or location"
                   value={searchLocation}
                   onChange={(e) => setSearchLocation(e.target.value)}
-                  className="pl-12 pr-4 py-4 text-lg border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-14 pr-6 py-6 text-lg bg-white/70 backdrop-blur-sm border-0 rounded-2xl shadow-lg hover:shadow-xl focus:shadow-xl transition-all duration-300 focus:bg-white/90 placeholder:text-gray-400"
                 />
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   type="submit"
                   size="lg" 
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg rounded-xl"
+                  className="bg-black hover:bg-gray-800 text-white px-12 py-6 text-lg rounded-full font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
-                  <Search className="h-5 w-5 mr-2" />
-                  Search Properties
+                  <Search className="h-5 w-5 mr-3" />
+                  Find Properties
                 </Button>
                 <Button 
                   type="button"
                   variant="outline"
                   size="lg" 
                   onClick={() => navigate('/properties')}
-                  className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-4 text-lg rounded-xl"
+                  className="border-2 border-gray-200 hover:border-gray-300 text-gray-700 hover:bg-gray-50 px-12 py-6 text-lg rounded-full font-medium transition-all duration-300 hover:scale-105"
                 >
                   Browse All
                 </Button>
               </div>
             </form>
           </div>
-        </div>
 
-        {/* Quick Stats */}
-        <div className="mt-16 lg:mt-20">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-3xl lg:text-4xl font-bold text-blue-600 mb-2">500+</div>
-              <div className="text-gray-600">Properties</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl lg:text-4xl font-bold text-blue-600 mb-2">50+</div>
-              <div className="text-gray-600">Universities</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl lg:text-4xl font-bold text-blue-600 mb-2">10K+</div>
-              <div className="text-gray-600">Happy Students</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl lg:text-4xl font-bold text-blue-600 mb-2">100%</div>
-              <div className="text-gray-600">Verified</div>
-            </div>
+          {/* Stats */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto pt-16">
+            {[
+              { number: "500+", label: "Properties" },
+              { number: "50+", label: "Universities" },
+              { number: "10K+", label: "Students" },
+              { number: "100%", label: "Verified" }
+            ].map((stat, index) => (
+              <div key={index} className="space-y-2 group cursor-default">
+                <div className="text-4xl lg:text-5xl font-light text-gray-900 group-hover:scale-110 transition-transform duration-300">
+                  {stat.number}
+                </div>
+                <div className="text-gray-600 font-light text-lg">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <button 
+          onClick={scrollToFeatures}
+          className="p-3 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+        >
+          <ChevronDown className="h-6 w-6 text-gray-600" />
+        </button>
       </div>
     </div>
   );

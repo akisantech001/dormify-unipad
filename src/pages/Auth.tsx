@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect } from 'react';
+import TestAccountSetup from '@/components/TestAccountSetup';
 
 const Auth = () => {
   const { signIn, signUp, signInWithGoogle, signInWithTwitter, user, loading, isAdmin } = useAuth();
@@ -73,6 +74,17 @@ const Auth = () => {
     setIsLoading(false);
   };
 
+  const handleTestLogin = (email: string, password: string) => {
+    // Auto-fill the form
+    const emailInput = document.getElementById('signin-email') as HTMLInputElement;
+    const passwordInput = document.getElementById('signin-password') as HTMLInputElement;
+    
+    if (emailInput && passwordInput) {
+      emailInput.value = email;
+      passwordInput.value = password;
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -94,6 +106,8 @@ const Auth = () => {
           <h1 className="text-2xl font-bold text-gray-900">Welcome to Dormify</h1>
           <p className="text-gray-600">Find your perfect student accommodation</p>
         </div>
+
+        <TestAccountSetup />
 
         <Card>
           <CardHeader>
@@ -174,11 +188,47 @@ const Auth = () => {
 
                   {/* Test Account Info */}
                   <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                    <h4 className="font-medium text-blue-900 mb-2">Test Accounts:</h4>
-                    <div className="text-sm text-blue-800 space-y-1">
-                      <p><strong>Admin:</strong> admin@dormify.com / password123</p>
-                      <p><strong>Student:</strong> student@test.com / password123</p>
-                      <p><strong>Landlord:</strong> landlord@test.com / password123</p>
+                    <h4 className="font-medium text-blue-900 mb-3">Test Accounts:</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between p-2 bg-white rounded border">
+                        <div className="text-sm">
+                          <p className="font-medium text-red-700">Admin</p>
+                          <p className="text-gray-600">admin@dormify.com</p>
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleTestLogin('admin@dormify.com', 'password123')}
+                        >
+                          Use
+                        </Button>
+                      </div>
+                      <div className="flex items-center justify-between p-2 bg-white rounded border">
+                        <div className="text-sm">
+                          <p className="font-medium text-blue-700">Student</p>
+                          <p className="text-gray-600">student@test.com</p>
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleTestLogin('student@test.com', 'password123')}
+                        >
+                          Use
+                        </Button>
+                      </div>
+                      <div className="flex items-center justify-between p-2 bg-white rounded border">
+                        <div className="text-sm">
+                          <p className="font-medium text-green-700">Landlord</p>
+                          <p className="text-gray-600">landlord@test.com</p>
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleTestLogin('landlord@test.com', 'password123')}
+                        >
+                          Use
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>

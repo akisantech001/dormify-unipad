@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Shield, Users, Home, MessageSquare, BookOpen } from 'lucide-react';
+import { Shield, Users, Home, MessageSquare, BookOpen, Plus } from 'lucide-react';
 
 interface Stats {
   totalUsers: number;
@@ -278,8 +278,15 @@ const AdminDashboard = () => {
           
           <TabsContent value="properties" className="space-y-6">
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Property Management</CardTitle>
+                <Button 
+                  onClick={() => navigate('/add-property')}
+                  className="flex items-center gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Property
+                </Button>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">

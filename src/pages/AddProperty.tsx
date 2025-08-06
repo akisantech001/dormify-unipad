@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -50,9 +50,10 @@ const amenitiesList = [
 ];
 
 const AddProperty = () => {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [landlords, setLandlords] = useState<{id: string, full_name: string, email: string}[]>([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -63,8 +64,31 @@ const AddProperty = () => {
     bathrooms: '',
     property_type: '',
     distance_to_university: '',
-    amenities: [] as string[]
+    amenities: [] as string[],
+    landlord_id: user?.id || '' // Default to current user
   });
+
+  useEffect(() => {
+    // If admin, fetch list of landlords for property assignment
+    if (isAdmin) {
+      fetchLandlords();
+    }
+  }, [isAdmin]);
+
+  const fetchLandlords = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, full_name, email')
+        .eq('role', 'landlord')
+        .order('full_name');
+      
+      if (error) throw error;
+      if (data) setLandlords(data);
+    } catch (error) {
+      console.error('Error fetching landlords:', error);
+    }
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -97,14 +121,14 @@ const AddProperty = () => {
           price: parseFloat(formData.price),
           bedrooms: parseInt(formData.bedrooms),
           bathrooms: parseInt(formData.bathrooms),
-          landlord_id: user.id,
+          landlord_id: isAdmin ? formData.landlord_id : user.id,
           images: [] // We'll add image upload later
         }]);
 
       if (error) throw error;
 
       toast.success('Property added successfully!');
-      navigate('/manage-properties');
+      navigate(isAdmin ? '/admin' : '/manage-properties');
     } catch (error) {
       console.error('Error adding property:', error);
       toast.error('Failed to add property');
@@ -127,8 +151,8 @@ const AddProperty = () => {
               />
               <h1 className="text-xl font-semibold">Add Property</h1>
             </div>
-            <Button onClick={() => navigate('/manage-properties')} variant="outline">
-              Back to Properties
+            <Button onClick={() => navigate(isAdmin ? '/admin' : '/manage-properties')} variant="outline">
+              {isAdmin ? 'Back to Admin' : 'Back to Properties'}
             </Button>
           </div>
         </div>
@@ -201,6 +225,25 @@ const AddProperty = () => {
                   </Select>
                 </div>
 
+                {isAdmin && (
+                  <div className="space-y-2">
+                    <Label htmlFor="landlord">Assign to Landlord</Label>
+                    <Select value={formData.landlord_id} onValueChange={(value) => handleInputChange('landlord_id', value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Landlord" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={user?.id || ''}>Admin (Self)</SelectItem>
+                        {landlords.map((landlord) => (
+                          <SelectItem key={landlord.id} value={landlord.id}>
+                            {landlord.full_name} ({landlord.email})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Label htmlFor="distance">Distance to University</Label>
                   <Input
@@ -263,7 +306,7 @@ const AddProperty = () => {
               </div>
 
               <div className="flex justify-end space-x-4">
-                <Button type="button" variant="outline" onClick={() => navigate('/manage-properties')}>
+                <Button type="button" variant="outline" onClick={() => navigate(isAdmin ? '/admin' : '/manage-properties')}>
                   Cancel
                 </Button>
                 <Button type="submit" disabled={loading}>

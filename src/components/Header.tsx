@@ -1,10 +1,11 @@
 
-import { Search, MapPin, User, Menu, X, Home } from "lucide-react";
+import { Search, MapPin, User, Menu, X, Home, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface HeaderProps {
   searchTerm: string;
@@ -31,10 +32,21 @@ const universities = [
 
 const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniversity }: HeaderProps) => {
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleAuthClick = () => {
-    navigate('/auth');
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/auth');
+    }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+    setIsMobileMenuOpen(false);
   };
 
   const handleLogoClick = () => {
@@ -59,15 +71,37 @@ const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniv
                 className="h-24 w-auto"
               />
             </div>
-            <Button 
-              variant="outline" 
-              className="hidden sm:flex items-center space-x-2 text-xs lg:text-sm px-2 lg:px-4" 
-              onClick={handleAuthClick}
-            >
-              <User className="h-4 w-4" />
-              <span className="hidden md:inline">Login / Sign Up</span>
-              <span className="md:hidden">Login</span>
-            </Button>
+            {user ? (
+              <div className="hidden sm:flex items-center space-x-2">
+                <Button 
+                  variant="outline" 
+                  className="items-center space-x-2 text-xs lg:text-sm px-2 lg:px-4" 
+                  onClick={handleAuthClick}
+                >
+                  <User className="h-4 w-4" />
+                  <span className="hidden md:inline">Dashboard</span>
+                  <span className="md:hidden">Dashboard</span>
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={handleSignOut}
+                  title="Sign Out"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <Button 
+                variant="outline" 
+                className="hidden sm:flex items-center space-x-2 text-xs lg:text-sm px-2 lg:px-4" 
+                onClick={handleAuthClick}
+              >
+                <User className="h-4 w-4" />
+                <span className="hidden md:inline">Login / Sign Up</span>
+                <span className="md:hidden">Login</span>
+              </Button>
+            )}
           </div>
 
           {/* Search Bar - Hidden on small screens */}
@@ -143,15 +177,36 @@ const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniv
               </SelectContent>
             </Select>
 
-            {/* Mobile Login Button */}
-            <Button 
-              variant="outline" 
-              className="sm:hidden flex items-center justify-center space-x-2 w-full" 
-              onClick={handleAuthClick}
-            >
-              <User className="h-4 w-4" />
-              <span>Login / Sign Up</span>
-            </Button>
+            {/* Mobile Auth Buttons */}
+            {user ? (
+              <div className="sm:hidden space-y-2">
+                <Button 
+                  variant="outline" 
+                  className="flex items-center justify-center space-x-2 w-full" 
+                  onClick={handleAuthClick}
+                >
+                  <User className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="flex items-center justify-center space-x-2 w-full" 
+                  onClick={handleSignOut}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Sign Out</span>
+                </Button>
+              </div>
+            ) : (
+              <Button 
+                variant="outline" 
+                className="sm:hidden flex items-center justify-center space-x-2 w-full" 
+                onClick={handleAuthClick}
+              >
+                <User className="h-4 w-4" />
+                <span>Login / Sign Up</span>
+              </Button>
+            )}
           </div>
         </div>
 

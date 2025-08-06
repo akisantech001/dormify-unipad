@@ -1,5 +1,5 @@
 
-import { MapPin, Menu, User, X } from "lucide-react";
+import { MapPin, Menu, User, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +28,7 @@ interface LandingHeaderProps {
 
 const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHeaderProps) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleAuthClick = () => {
@@ -49,6 +49,12 @@ const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHea
 
   const handleNavClick = (path: string) => {
     navigate(path);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
     setIsMobileMenuOpen(false);
   };
 
@@ -90,13 +96,33 @@ const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHea
               >
                 Browse Properties
               </Button>
-              <Button 
-                onClick={handleAuthClick}
-                className="bg-black hover:bg-gray-800 text-white px-6 py-2 rounded-full font-light transition-all duration-200 hover:scale-105"
-              >
-                <User className="h-4 w-4 mr-2" />
-                {user ? 'Dashboard' : 'Sign In'}
-              </Button>
+              {user ? (
+                <div className="flex items-center space-x-2">
+                  <Button 
+                    onClick={handleAuthClick}
+                    className="bg-black hover:bg-gray-800 text-white px-6 py-2 rounded-full font-light transition-all duration-200 hover:scale-105"
+                  >
+                    <User className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </Button>
+                  <Button 
+                    onClick={handleSignOut}
+                    variant="outline"
+                    className="border-gray-200 hover:border-gray-300 text-gray-700 hover:bg-gray-50 p-2 rounded-full font-light transition-all duration-200 hover:scale-105"
+                    title="Sign Out"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <Button 
+                  onClick={handleAuthClick}
+                  className="bg-black hover:bg-gray-800 text-white px-6 py-2 rounded-full font-light transition-all duration-200 hover:scale-105"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Sign In
+                </Button>
+              )}
             </div>
           </div>
 
@@ -134,13 +160,33 @@ const LandingHeader = ({ selectedUniversity, setSelectedUniversity }: LandingHea
               >
                 Browse Properties
               </Button>
-              <Button 
-                onClick={handleAuthClick}
-                className="w-full bg-black hover:bg-gray-800 text-white py-4 rounded-2xl font-light"
-              >
-                <User className="h-4 w-4 mr-2" />
-                {user ? 'Dashboard' : 'Sign In'}
-              </Button>
+              {user ? (
+                <div className="space-y-3">
+                  <Button 
+                    onClick={handleAuthClick}
+                    className="w-full bg-black hover:bg-gray-800 text-white py-4 rounded-2xl font-light"
+                  >
+                    <User className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </Button>
+                  <Button 
+                    onClick={handleSignOut}
+                    variant="outline"
+                    className="w-full border-gray-200 text-gray-700 hover:bg-gray-50 py-4 rounded-2xl font-light"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <Button 
+                  onClick={handleAuthClick}
+                  className="w-full bg-black hover:bg-gray-800 text-white py-4 rounded-2xl font-light"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Sign In
+                </Button>
+              )}
             </div>
           </div>
         )}

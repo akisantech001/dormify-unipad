@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Bed, Bath, Star, Heart, Calendar } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useIsFavorited, useToggleFavorite } from '@/hooks/useFavorites';
 import BookingModal from './BookingModal';
 import { toast } from 'sonner';
 
@@ -32,7 +33,9 @@ interface PropertyCardProps {
 const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
   const { user } = useAuth();
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
+  
+  const { data: isFavorited = false } = useIsFavorited(property.id.toString());
+  const toggleFavoriteMutation = useToggleFavorite();
 
   const handleBookingClick = () => {
     if (!user) {
@@ -51,8 +54,10 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
       toast.error('Please log in to save favorites');
       return;
     }
-    setIsFavorited(!isFavorited);
-    toast.success(isFavorited ? 'Removed from favorites' : 'Added to favorites');
+    toggleFavoriteMutation.mutate({
+      propertyId: property.id.toString(),
+      isFavorited,
+    });
   };
 
   return (
@@ -136,12 +141,15 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
               </div>
             )}
             
-            <div className="flex justify-between items-end pt-2">
-              <div className="flex flex-col">
-                <span className="text-2xl font-bold">₦{property.price.toLocaleString()}</span>
+            <div className="flex justify-between items-start pt-2 gap-4">
+              <div className="flex flex-col min-w-0 flex-shrink">
+                <span className="text-2xl font-bold truncate">₦{property.price.toLocaleString()}</span>
                 <span className="text-gray-600 text-sm">/month</span>
               </div>
-              <Button onClick={handleBookingClick} className="bg-blue-600 hover:bg-blue-700 px-6 py-2 h-auto">
+              <Button 
+                onClick={handleBookingClick} 
+                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 h-auto whitespace-nowrap flex-shrink-0"
+              >
                 <Calendar className="h-4 w-4 mr-2" />
                 Book Now
               </Button>

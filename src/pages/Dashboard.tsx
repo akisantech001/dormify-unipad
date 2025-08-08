@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useFavorites } from '@/hooks/useFavorites';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -12,6 +13,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { data: favorites = [] } = useFavorites();
 
   useEffect(() => {
     if (!user) {
@@ -180,7 +182,41 @@ const Dashboard = () => {
                     <p className="text-gray-600 mt-4">Property list will be displayed here.</p>
                   </div>
                 ) : (
-                  <p className="text-gray-600">Your bookings and favorites will be displayed here.</p>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Favorite Properties</h3>
+                    {favorites.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {favorites.map((favorite) => (
+                          <Card key={favorite.id} className="overflow-hidden">
+                            <div className="relative">
+                              <img
+                                src={favorite.property?.images[0] ? `/lovable-uploads/${favorite.property.images[0]}.jpg` : '/placeholder.svg'}
+                                alt={favorite.property?.title}
+                                className="w-full h-32 object-cover"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.src = '/placeholder.svg';
+                                }}
+                              />
+                            </div>
+                            <CardContent className="p-3">
+                              <h4 className="font-semibold text-sm truncate">{favorite.property?.title}</h4>
+                              <p className="text-xs text-gray-600 truncate">{favorite.property?.location}</p>
+                              <p className="text-sm font-bold text-blue-600">₦{favorite.property?.price?.toLocaleString()}/month</p>
+                              <div className="flex justify-between items-center mt-2">
+                                <span className="text-xs text-gray-500">{favorite.property?.bedrooms} bed • {favorite.property?.bathrooms} bath</span>
+                                <Button size="sm" onClick={() => navigate('/properties')}>
+                                  View
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-gray-600">You haven't favorited any properties yet. Browse properties to add some favorites!</p>
+                    )}
+                  </div>
                 )}
               </CardContent>
             </Card>

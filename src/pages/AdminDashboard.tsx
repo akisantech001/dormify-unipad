@@ -167,7 +167,8 @@ const AdminDashboard = () => {
               <img 
                 src="/lovable-uploads/5c4aa35b-ca69-4dc1-b276-5b3e91f46e3a.png" 
                 alt="Dormify" 
-                className="h-20 w-auto"
+                className="h-20 w-auto cursor-pointer"
+                onClick={() => navigate('/')}
               />
               <div className="flex items-center space-x-2">
                 <Shield className="h-5 w-5 text-red-600" />

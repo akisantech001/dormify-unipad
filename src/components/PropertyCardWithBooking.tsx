@@ -141,17 +141,18 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
               </div>
             )}
             
-            <div className="flex justify-between items-start pt-2 gap-4">
-              <div className="flex flex-col min-w-0 flex-shrink">
-                <span className="text-2xl font-bold truncate">₦{property.price.toLocaleString()}</span>
+            <div className="flex justify-between items-center pt-2">
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold">₦{property.price.toLocaleString()}</span>
                 <span className="text-gray-600 text-sm">/month</span>
               </div>
               <Button 
                 onClick={handleBookingClick} 
-                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 h-auto whitespace-nowrap flex-shrink-0"
+                size="icon"
+                className="bg-blue-600 hover:bg-blue-700 h-10 w-10 flex-shrink-0"
+                title="Book Now"
               >
-                <Calendar className="h-4 w-4 mr-2" />
-                Book Now
+                <Calendar className="h-4 w-4" />
               </Button>
             </div>
           </div>

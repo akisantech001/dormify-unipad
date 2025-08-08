@@ -12,7 +12,7 @@ const LandingFooter = () => {
               <img 
                 src="/lovable-uploads/5c4aa35b-ca69-4dc1-b276-5b3e91f46e3a.png" 
                 alt="Dormify" 
-                className="h-8 w-auto"
+                className="h-16 w-auto"
               />
             </div>
             <p className="text-gray-400 font-light text-lg leading-relaxed max-w-md">

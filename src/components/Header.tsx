@@ -68,7 +68,7 @@ const Header = ({ searchTerm, setSearchTerm, selectedUniversity, setSelectedUniv
               <img 
                 src="/lovable-uploads/5c4aa35b-ca69-4dc1-b276-5b3e91f46e3a.png" 
                 alt="Dormify" 
-                className="h-24 w-auto"
+                className="h-16 w-auto"
               />
             </div>
             {user ? (

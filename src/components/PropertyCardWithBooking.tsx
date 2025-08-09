@@ -75,9 +75,16 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
     }
   };
 
+  const handleCardClick = () => {
+    window.location.href = `/property/${propertyIdString}`;
+  };
+
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
+      <Card 
+        className="overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col cursor-pointer" 
+        onClick={handleCardClick}
+      >
         <div className="relative">
           <img
             src={`/lovable-uploads/${property.image}.jpg`}

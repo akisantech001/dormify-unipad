@@ -14,7 +14,7 @@ interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
   property: {
-    id: number;
+    id: number | string;
     title: string;
     price: number;
     location: string;

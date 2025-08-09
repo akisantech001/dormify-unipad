@@ -10,7 +10,7 @@ import BookingModal from './BookingModal';
 import { toast } from 'sonner';
 
 interface Property {
-  id: number;
+  id: number | string;
   title: string;
   location: string;
   university: string;
@@ -93,8 +93,8 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
           </div>
         </div>
         
-        <CardContent className="p-4">
-          <div className="space-y-2">
+        <CardContent className="p-4 flex flex-col h-full">
+          <div className="space-y-2 flex-1 flex flex-col">
             <div className="flex justify-between items-start">
               <h3 className="font-semibold text-lg line-clamp-1">{property.title}</h3>
               <div className="flex items-center space-x-1">
@@ -141,7 +141,7 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
               </div>
             )}
             
-            <div className="flex justify-between items-center pt-2">
+            <div className="flex justify-between items-end pt-3 mt-auto">
               <div className="flex flex-col">
                 <span className="text-2xl font-bold">₦{property.price.toLocaleString()}</span>
                 <span className="text-gray-600 text-sm">/month</span>

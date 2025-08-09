@@ -52,7 +52,7 @@ const PropertyListFromDB = ({ filters }: PropertyListFromDBProps) => {
         <PropertyCardWithBooking
           key={property.id}
           property={{
-            id: parseInt(property.id),
+            id: property.id,
             title: property.title,
             location: property.location,
             university: property.university,

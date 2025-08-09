@@ -68,7 +68,7 @@ export const useIsFavorited = (propertyId: string) => {
         .select('id')
         .eq('user_id', user.id)
         .eq('property_id', propertyId)
-        .single();
+        .maybeSingle();
       
       if (error && error.code !== 'PGRST116') throw error;
       return !!data;

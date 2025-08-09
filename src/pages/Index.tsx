@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Header from "@/components/Header";
 import PropertyFilters from "@/components/PropertyFilters";
-import PropertyList from "@/components/PropertyList";
+import PropertyListFromDB from "@/components/PropertyListFromDB";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -72,7 +72,7 @@ const Index = () => {
           </div>
           
           <div className="lg:col-span-3">
-            <PropertyList filters={filters} />
+            <PropertyListFromDB filters={filters} />
           </div>
         </div>
       </main>

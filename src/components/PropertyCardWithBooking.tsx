@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -32,6 +33,7 @@ interface PropertyCardProps {
 
 const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   
   // Convert property.id to string to ensure consistency
@@ -40,7 +42,10 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
   const { data: isFavorited = false, refetch: refetchFavorites } = useIsFavorited(propertyIdString);
   const toggleFavoriteMutation = useToggleFavorite();
 
-  const handleBookingClick = () => {
+  const handleBookingClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (!user) {
       toast.error('Please log in to make a booking');
       return;
@@ -76,7 +81,7 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
   };
 
   const handleCardClick = () => {
-    window.location.href = `/property/${propertyIdString}`;
+    navigate(`/property/${propertyIdString}`);
   };
 
   return (

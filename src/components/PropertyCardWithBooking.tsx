@@ -34,7 +34,10 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
   const { user } = useAuth();
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   
-  const { data: isFavorited = false } = useIsFavorited(property.id.toString());
+  // Convert property.id to string to ensure consistency
+  const propertyIdString = property.id.toString();
+  
+  const { data: isFavorited = false, refetch: refetchFavorites } = useIsFavorited(propertyIdString);
   const toggleFavoriteMutation = useToggleFavorite();
 
   const handleBookingClick = () => {
@@ -49,20 +52,32 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
     setIsBookingModalOpen(true);
   };
 
-  const handleFavoriteClick = () => {
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (!user) {
       toast.error('Please log in to save favorites');
       return;
     }
-    toggleFavoriteMutation.mutate({
-      propertyId: property.id.toString(),
-      isFavorited,
-    });
+    
+    console.log('Toggling favorite for property:', propertyIdString, 'Current state:', isFavorited);
+    
+    try {
+      await toggleFavoriteMutation.mutateAsync({
+        propertyId: propertyIdString,
+        isFavorited,
+      });
+      // Refetch to ensure UI is updated
+      refetchFavorites();
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
   };
 
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
         <div className="relative">
           <img
             src={`/lovable-uploads/${property.image}.jpg`}
@@ -84,8 +99,11 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
               variant="outline"
               className="bg-white/80 hover:bg-white"
               onClick={handleFavoriteClick}
+              disabled={toggleFavoriteMutation.isPending}
             >
-              <Heart className={`h-4 w-4 ${isFavorited ? 'fill-red-500 text-red-500' : ''}`} />
+              <Heart 
+                className={`h-4 w-4 ${isFavorited ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} 
+              />
             </Button>
           </div>
           <div className="absolute top-2 left-2">
@@ -93,7 +111,7 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
           </div>
         </div>
         
-        <CardContent className="p-4 flex flex-col h-full">
+        <CardContent className="p-4 flex flex-col flex-1">
           <div className="space-y-2 flex-1 flex flex-col">
             <div className="flex justify-between items-start">
               <h3 className="font-semibold text-lg line-clamp-1">{property.title}</h3>

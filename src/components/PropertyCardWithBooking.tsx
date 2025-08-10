@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Bed, Bath, Star, Heart, Calendar } from 'lucide-react';
+import { MapPin, Bed, Bath, Star, Heart } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useIsFavorited, useToggleFavorite } from '@/hooks/useFavorites';
-import BookingModal from './BookingModal';
+
 import { toast } from 'sonner';
 
 interface Property {
@@ -34,7 +34,7 @@ interface PropertyCardProps {
 const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  
   
   // Convert property.id to string to ensure consistency
   const propertyIdString = property.id.toString();
@@ -42,20 +42,6 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
   const { data: isFavorited = false, refetch: refetchFavorites } = useIsFavorited(propertyIdString);
   const toggleFavoriteMutation = useToggleFavorite();
 
-  const handleBookingClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (!user) {
-      toast.error('Please log in to make a booking');
-      return;
-    }
-    if (user.role === 'landlord') {
-      toast.error('Landlords cannot book properties');
-      return;
-    }
-    setIsBookingModalOpen(true);
-  };
 
   const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -92,11 +78,12 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
       >
         <div className="relative">
           <img
-            src={`/lovable-uploads/${property.image}.jpg`}
-            alt={property.title}
+            src={property.image}
+            alt={`${property.title} near ${property.university}`}
             className="w-full h-48 object-cover"
+            loading="lazy"
             onError={(e) => {
-              const target = e.target as HTMLImageElement;
+              const target = e.currentTarget as HTMLImageElement;
               target.src = '/placeholder.svg';
             }}
           />
@@ -171,29 +158,16 @@ const PropertyCardWithBooking = ({ property }: PropertyCardProps) => {
               </div>
             )}
             
-            <div className="flex justify-between items-end pt-3 mt-auto">
+            <div className="flex items-end pt-3 mt-auto">
               <div className="flex flex-col">
                 <span className="text-2xl font-bold">₦{property.price.toLocaleString()}</span>
                 <span className="text-gray-600 text-sm">/month</span>
               </div>
-              <Button 
-                onClick={handleBookingClick} 
-                size="icon"
-                className="bg-blue-600 hover:bg-blue-700 h-10 w-10 flex-shrink-0"
-                title="Book Now"
-              >
-                <Calendar className="h-4 w-4" />
-              </Button>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <BookingModal
-        isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
-        property={property}
-      />
     </>
   );
 };

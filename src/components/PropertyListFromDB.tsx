@@ -63,7 +63,7 @@ const PropertyListFromDB = ({ filters }: PropertyListFromDBProps) => {
             bathrooms: property.bathrooms,
             distance: property.distance_to_university || '0.5 miles',
             amenities: property.amenities || [],
-            image: property.images && property.images[0] ? property.images[0] : 'photo-1721322800607-8c38375eef04',
+            image: property.images && property.images[0] ? property.images[0] : '/placeholder.svg',
             verified: property.is_verified,
             type: property.property_type,
           }}

@@ -75,6 +75,8 @@ const AddProperty = () => {
     }
   }, [isAdmin]);
 
+  const [images, setImages] = useState<File[]>([]);
+
   const fetchLandlords = async () => {
     try {
       const { data, error } = await supabase
@@ -114,6 +116,31 @@ const AddProperty = () => {
     setLoading(true);
 
     try {
+      // Upload images to Supabase Storage
+      const imageUrls: string[] = [];
+      if (images.length > 0) {
+        for (let i = 0; i < images.length; i++) {
+          const file = images[i];
+          const path = `${user.id}/${Date.now()}-${i}-${file.name}`;
+          const { error: uploadError } = await supabase
+            .storage
+            .from('property-images')
+            .upload(path, file, {
+              cacheControl: '3600',
+              upsert: false,
+              contentType: file.type,
+            });
+          if (uploadError) throw uploadError;
+          const { data: publicData } = supabase
+            .storage
+            .from('property-images')
+            .getPublicUrl(path);
+          if (publicData?.publicUrl) {
+            imageUrls.push(publicData.publicUrl);
+          }
+        }
+      }
+
       const { error } = await supabase
         .from('properties')
         .insert([{
@@ -122,7 +149,7 @@ const AddProperty = () => {
           bedrooms: parseInt(formData.bedrooms),
           bathrooms: parseInt(formData.bathrooms),
           landlord_id: isAdmin ? formData.landlord_id : user.id,
-          images: [] // We'll add image upload later
+          images: imageUrls,
         }]);
 
       if (error) throw error;
@@ -303,6 +330,17 @@ const AddProperty = () => {
                     </div>
                   ))}
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="images">Property Images</Label>
+                <Input
+                  id="images"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => setImages(Array.from(e.target.files || []))}
+                />
               </div>
 
               <div className="flex justify-end space-x-4">

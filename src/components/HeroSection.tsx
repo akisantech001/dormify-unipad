@@ -54,12 +54,13 @@ const HeroSection = () => {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
-                  type="submit"
+                  type="button"
                   size="lg" 
+                  onClick={() => navigate('/landlord-signup')}
                   className="bg-black hover:bg-gray-800 text-white px-12 py-6 text-lg rounded-full font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   <Search className="h-5 w-5 mr-3" />
-                  Find Properties
+                  Post your property
                 </Button>
                 <Button 
                   type="button"

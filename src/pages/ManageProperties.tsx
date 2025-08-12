@@ -106,7 +106,7 @@ const ManageProperties = () => {
 
       <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">Your Properties</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Your Properties <span className="text-gray-500 text-base">({userProperties.length})</span></h2>
           <p className="text-gray-600 mt-2">Manage your property listings</p>
         </div>
 

@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, MapPin, ChevronDown } from "lucide-react";
+import { Plus, MapPin, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -59,7 +59,7 @@ const HeroSection = () => {
                   onClick={() => navigate('/landlord-signup')}
                   className="bg-black hover:bg-gray-800 text-white px-12 py-6 text-lg rounded-full font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
-                  <Search className="h-5 w-5 mr-3" />
+                  <Plus className="h-5 w-5 mr-3" />
                   Post your property
                 </Button>
                 <Button 

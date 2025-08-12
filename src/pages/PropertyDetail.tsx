@@ -125,7 +125,13 @@ const PropertyDetail = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
             <div className="lg:col-span-2">
               <img
-                src={`/lovable-uploads/${property.images[0] || 'photo-1721322800607-8c38375eef04'}.jpg`}
+                src={
+                  property.images && property.images[0]
+                    ? (property.images[0].startsWith('http') || property.images[0].startsWith('/')
+                        ? property.images[0]
+                        : supabase.storage.from('property-images').getPublicUrl(property.images[0]).data.publicUrl)
+                    : '/placeholder.svg'
+                }
                 alt={property.title}
                 className="w-full h-96 lg:h-[500px] object-cover rounded-lg"
                 onError={(e) => {
@@ -138,7 +144,13 @@ const PropertyDetail = () => {
               {property.images.slice(1, 5).map((image, index) => (
                 <img
                   key={index}
-                  src={`/lovable-uploads/${image}.jpg`}
+                  src={
+                    image
+                      ? (image.startsWith('http') || image.startsWith('/')
+                          ? image
+                          : supabase.storage.from('property-images').getPublicUrl(image).data.publicUrl)
+                      : '/placeholder.svg'
+                  }
                   alt={`${property.title} - Image ${index + 2}`}
                   className="w-full h-24 lg:h-[118px] object-cover rounded-lg"
                   onError={(e) => {
@@ -266,7 +278,11 @@ const PropertyDetail = () => {
                       bathrooms: similarProperty.bathrooms,
                       distance: similarProperty.distance_to_university || '0.5 miles',
                       amenities: similarProperty.amenities || [],
-                      image: similarProperty.images && similarProperty.images[0] ? similarProperty.images[0] : 'photo-1721322800607-8c38375eef04',
+                      image: similarProperty.images && similarProperty.images[0]
+                        ? (similarProperty.images[0].startsWith('http') || similarProperty.images[0].startsWith('/')
+                            ? similarProperty.images[0]
+                            : supabase.storage.from('property-images').getPublicUrl(similarProperty.images[0]).data.publicUrl)
+                        : 'photo-1721322800607-8c38375eef04',
                       verified: similarProperty.is_verified,
                       type: similarProperty.property_type,
                     }}

@@ -14,6 +14,8 @@ const Dashboard = () => {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { data: favorites = [] } = useFavorites();
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [propertyMap, setPropertyMap] = useState<Record<string, any>>({});
 
   useEffect(() => {
     if (!user) {
@@ -49,6 +51,60 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+
+  // Fetch bookings for landlord (their properties) or student (their own)
+  useEffect(() => {
+    if (!user || !profile) return;
+
+    const load = async () => {
+      try {
+        if (profile.role === 'landlord') {
+          const { data: props } = await supabase
+            .from('properties')
+            .select('id, title, location')
+            .eq('landlord_id', user.id);
+
+          const ids = props?.map((p) => p.id) || [];
+          const map: Record<string, any> = {};
+          props?.forEach((p) => (map[p.id] = p));
+          setPropertyMap(map);
+
+          if (ids.length > 0) {
+            const { data: bks } = await supabase
+              .from('bookings')
+              .select('*')
+              .in('property_id', ids)
+              .order('created_at', { ascending: false });
+            setBookings(bks || []);
+          } else {
+            setBookings([]);
+          }
+        } else {
+          const { data: bks } = await supabase
+            .from('bookings')
+            .select('*')
+            .eq('student_id', user.id)
+            .order('created_at', { ascending: false });
+          setBookings(bks || []);
+        }
+      } catch (err) {
+        console.error('Error loading bookings:', err);
+      }
+    };
+
+    load();
+
+    const channel = supabase
+      .channel('bookings-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
+        load();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, profile]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -228,7 +284,35 @@ const Dashboard = () => {
                 <CardTitle>Bookings</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">Booking management will be implemented here.</p>
+                {bookings.length === 0 ? (
+                  <p className="text-gray-600">No bookings yet.</p>
+                ) : (
+                  <div className="space-y-4">
+                    {bookings.map((b) => (
+                      <div key={b.id} className="p-4 border rounded-lg flex items-center justify-between">
+                        <div>
+                          <h4 className="font-medium">
+                            {profile?.role === 'landlord'
+                              ? propertyMap[b.property_id]?.title || 'Property'
+                              : 'Your booking'}
+                          </h4>
+                          <p className="text-sm text-gray-600">
+                            {new Date(b.created_at).toLocaleString()} • {b.status}
+                          </p>
+                          {profile?.role === 'landlord' && (
+                            <p className="text-sm text-gray-600">
+                              Location: {propertyMap[b.property_id]?.location || '—'}
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm">Check-in: {b.check_in_date || '—'}</p>
+                          <p className="text-sm">Check-out: {b.check_out_date || '—'}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

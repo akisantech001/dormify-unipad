@@ -51,31 +51,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          await checkAdminStatus(session.user.id);
-        } else {
-          setIsAdmin(false);
-        }
-        
-        setLoading(false);
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    // Set up auth state listener (synchronous callback)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
-        await checkAdminStatus(session.user.id);
+        // Defer Supabase calls to avoid deadlocks in the callback
+        setTimeout(() => {
+          checkAdminStatus(session.user!.id);
+        }, 0);
+      } else {
+        setIsAdmin(false);
       }
-      
+
+      setLoading(false);
+    });
+
+    // Check for existing session AFTER listener is set
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        setTimeout(() => {
+          checkAdminStatus(session.user!.id);
+        }, 0);
+      }
       setLoading(false);
     });
 
@@ -157,6 +158,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       toast.error(error.message);
     } else {
       toast.success('Signed out successfully');
+      setUser(null);
+      setSession(null);
       setIsAdmin(false);
     }
   };

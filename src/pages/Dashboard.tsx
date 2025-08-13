@@ -149,6 +149,27 @@ const Dashboard = () => {
     }
   };
 
+  const handleDisapprove = async (booking: any) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'rejected' })
+        .eq('id', booking.id);
+      if (error) throw error;
+
+      await sendMessage.mutateAsync({
+        receiver_id: booking.student_id,
+        property_id: booking.property_id,
+        subject: 'Booking Disapproved',
+        content: `Your booking for "${propertyMap[booking.property_id]?.title ?? 'the property'}" has been disapproved by the landlord.`,
+      });
+
+      toast.success('Booking disapproved');
+    } catch (err) {
+      console.error('Error disapproving booking:', err);
+      toast.error('Failed to disapprove booking');
+    }
+  };
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -345,6 +366,11 @@ const Dashboard = () => {
                           {profile?.role === 'landlord' && b.status === 'pending' && (
                             <Button size="sm" onClick={() => handleApprove(b)} disabled={sendMessage.isPending}>
                               Approve
+                            </Button>
+                          )}
+                          {profile?.role === 'landlord' && b.status === 'approved' && (
+                            <Button size="sm" variant="destructive" onClick={() => handleDisapprove(b)} disabled={sendMessage.isPending}>
+                              Disapprove
                             </Button>
                           )}
                         </div>

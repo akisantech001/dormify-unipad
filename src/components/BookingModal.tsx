@@ -45,22 +45,48 @@ const BookingModal = ({ isOpen, onClose, property }: BookingModalProps) => {
     setLoading(true);
 
     try {
+      // Prevent duplicate active bookings for the same property
+      const { data: existing, error: existingError } = await supabase
+        .from('bookings')
+        .select('id, status')
+        .eq('property_id', property.id.toString())
+        .eq('student_id', user.id)
+        .in('status', ['pending', 'approved'])
+        .limit(1);
+
+      if (existingError) throw existingError;
+      if (existing && existing.length > 0) {
+        toast.error('You already have an active booking request for this property.');
+        setLoading(false);
+        return;
+      }
+
       const { error } = await supabase
         .from('bookings')
-        .insert([{
-          property_id: property.id.toString(),
-          student_id: user.id,
-          check_in_date: formData.check_in_date,
-          check_out_date: formData.check_out_date,
-          message: formData.message,
-          status: 'pending'
-        }]);
+        .insert([
+          {
+            property_id: property.id.toString(),
+            student_id: user.id,
+            check_in_date: formData.check_in_date,
+            check_out_date: formData.check_out_date,
+            message: formData.message,
+            status: 'pending',
+          },
+        ]);
 
-      if (error) throw error;
-
-      toast.success('Booking request sent successfully!');
-      onClose();
-      setFormData({ check_in_date: '', check_out_date: '', message: '' });
+      if (error) {
+        // Handle race condition where another booking was inserted concurrently
+        const msg = (error as any)?.message?.toLowerCase?.() || '';
+        if ((error as any)?.code === '23505' || msg.includes('unique') || msg.includes('duplicate')) {
+          toast.error('You already have an active booking request for this property.');
+        } else {
+          throw error;
+        }
+      } else {
+        toast.success('Booking request sent successfully!');
+        onClose();
+        setFormData({ check_in_date: '', check_out_date: '', message: '' });
+      }
     } catch (error) {
       console.error('Error creating booking:', error);
       toast.error('Failed to create booking request');

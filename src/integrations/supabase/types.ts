@@ -367,6 +367,14 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: boolean
       }
+      is_landlord: {
+        Args: { user_uuid: string }
+        Returns: boolean
+      }
+      is_student: {
+        Args: { user_uuid: string }
+        Returns: boolean
+      }
     }
     Enums: {
       user_role: "student" | "landlord" | "admin"

@@ -24,6 +24,47 @@ serve(async (req) => {
       }
     )
 
+    // Authenticate caller and ensure admin
+    const authHeader = req.headers.get('Authorization')
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: { headers: { Authorization: authHeader ?? '' } },
+        auth: { autoRefreshToken: false, persistSession: false }
+      }
+    )
+
+    const { data: userData } = await supabase.auth.getUser()
+    const user = userData?.user
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      })
+    }
+
+    const { data: profile, error: profileErr } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    if (profileErr) {
+      console.error('Profile fetch error:', profileErr)
+      return new Response(JSON.stringify({ error: 'Unable to verify permissions' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      })
+    }
+
+    if (!profile || profile.role !== 'admin') {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 403,
+      })
+    }
+
     // Create test accounts
     const testAccounts = [
       {

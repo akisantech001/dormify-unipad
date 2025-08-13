@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useFavorites } from '@/hooks/useFavorites';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useSendMessage } from '@/hooks/useMessages';
 
 const Dashboard = () => {
   const { user, signOut, isAdmin } = useAuth();
@@ -16,7 +17,7 @@ const Dashboard = () => {
   const { data: favorites = [] } = useFavorites();
   const [bookings, setBookings] = useState<any[]>([]);
   const [propertyMap, setPropertyMap] = useState<Record<string, any>>({});
-
+  const sendMessage = useSendMessage();
   useEffect(() => {
     if (!user) {
       navigate('/auth');
@@ -96,7 +97,18 @@ const Dashboard = () => {
 
     const channel = supabase
       .channel('bookings-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bookings' }, (payload) => {
+        try {
+          if (profile?.role === 'landlord') {
+            const propertyId = (payload.new as any)?.property_id;
+            if (propertyId && propertyMap[propertyId]) {
+              toast.success('New booking request received');
+            }
+          }
+        } catch {}
+        load();
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'bookings' }, () => {
         load();
       })
       .subscribe();
@@ -113,6 +125,28 @@ const Dashboard = () => {
 
   const handleManageProperties = () => {
     navigate('/manage-properties');
+  };
+
+  const handleApprove = async (booking: any) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'approved' })
+        .eq('id', booking.id);
+      if (error) throw error;
+
+      await sendMessage.mutateAsync({
+        receiver_id: booking.student_id,
+        property_id: booking.property_id,
+        subject: 'Booking Approved',
+        content: `Your booking for "${propertyMap[booking.property_id]?.title ?? 'the property'}" has been approved.`,
+      });
+
+      toast.success('Booking approved');
+    } catch (err) {
+      console.error('Error approving booking:', err);
+      toast.error('Failed to approve booking');
+    }
   };
 
   if (loading) {
@@ -157,7 +191,7 @@ const Dashboard = () => {
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="properties">Properties</TabsTrigger>
-            <TabsTrigger value="bookings">Bookings</TabsTrigger>
+            <TabsTrigger value="bookings">Bookings{bookings.length ? ` (${bookings.length})` : ''}</TabsTrigger>
             <TabsTrigger value="messages">Messages</TabsTrigger>
           </TabsList>
           
@@ -305,9 +339,14 @@ const Dashboard = () => {
                             </p>
                           )}
                         </div>
-                        <div className="text-right">
+                        <div className="text-right space-y-2">
                           <p className="text-sm">Check-in: {b.check_in_date || '—'}</p>
                           <p className="text-sm">Check-out: {b.check_out_date || '—'}</p>
+                          {profile?.role === 'landlord' && b.status === 'pending' && (
+                            <Button size="sm" onClick={() => handleApprove(b)} disabled={sendMessage.isPending}>
+                              Approve
+                            </Button>
+                          )}
                         </div>
                       </div>
                     ))}

@@ -363,7 +363,7 @@ const Dashboard = () => {
                         <div className="text-right space-y-2">
                           <p className="text-sm">Check-in: {b.check_in_date || '—'}</p>
                           <p className="text-sm">Check-out: {b.check_out_date || '—'}</p>
-                          {profile?.role === 'landlord' && b.status === 'pending' && (
+                          {profile?.role === 'landlord' && (b.status === 'pending' || b.status === 'rejected') && (
                             <Button size="sm" onClick={() => handleApprove(b)} disabled={sendMessage.isPending}>
                               Approve
                             </Button>
